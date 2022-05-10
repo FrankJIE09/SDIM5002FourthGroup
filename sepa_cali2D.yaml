@@ -1,0 +1,55 @@
+# robot base coordinate in camera view, unit mm
+# [x, y]
+xy1:
+- 1320.8740054361656
+- 271.5195813875963
+xy2:
+- 1320.8740054361656
+- 171.51958138759633
+xy3:
+- 1430.8740054361656
+- 271.5195813875963
+xy4:
+- 1430.8740054361656
+- 171.51958138759633
+
+# camera base coordinate
+# [col, row]
+uv1: [690, 424]
+uv2: [829, 429]
+uv3: [696, 269]
+uv4: [834, 276]
+#robot base coordinate
+p1: [160, 270]
+p2: [160, 170]
+p3: [270, 270]
+p4: [270, 170]
+#belt move distance enc_pose
+a:
+- [-1429,45006]
+
+#belt degree
+n: 0.977
+# conveyor belt
+distance_camera_robot: 1069.35
+vector_start: [400, 100]
+vector_end: [10, 97]
+
+
+
+################For_test#########################
+uv1_t: [646, 355]
+uv2_t: [787, 360]
+uv3_t: [653, 199]
+uv4_t: [793, 207]
+#robot base coordinate
+p1_t: [60, 300]
+p2_t: [60, 200]
+p3_t: [170, 300]
+p4_t: [170, 200]
+#####################
+a_t:
+- [45006,97323]
+##############
+distance_test: 20000
+
