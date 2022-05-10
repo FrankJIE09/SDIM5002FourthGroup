@@ -57,7 +57,7 @@ class FocalLoss(nn.Module):
         if self.reduction == 'mean':
             return loss.mean()
         elif self.reduction == 'sum':
-            return loss.sum()
+            return loss.sum_()
         else:  # 'none'
             return loss
 
@@ -83,7 +83,7 @@ class QFocalLoss(nn.Module):
         if self.reduction == 'mean':
             return loss.mean()
         elif self.reduction == 'sum':
-            return loss.sum()
+            return loss.sum_()
         else:  # 'none'
             return loss
 

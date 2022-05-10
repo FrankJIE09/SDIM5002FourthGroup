@@ -620,7 +620,7 @@ def main(opt, callbacks=Callbacks()):
                     # x = x[random.randint(0, n - 1)]  # random selection
                     x = x[random.choices(range(n), weights=w)[0]]  # weighted selection
                 elif parent == 'weighted':
-                    x = (x * w.reshape(n, 1)).sum(0) / w.sum()  # weighted combination
+                    x = (x * w.reshape(n, 1)).sum_(0) / w.sum()  # weighted combination
 
                 # Mutate
                 mp, s = 0.8, 0.2  # mutation probability, sigma

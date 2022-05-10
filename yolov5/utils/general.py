@@ -605,14 +605,14 @@ def labels_to_class_weights(labels, nc=80):
 
     weights[weights == 0] = 1  # replace empty bins with 1
     weights = 1 / weights  # number of targets per class
-    weights /= weights.sum()  # normalize
+    weights /= weights.sum_()  # normalize
     return torch.from_numpy(weights)
 
 
 def labels_to_image_weights(labels, nc=80, class_weights=np.ones(80)):
     # Produces image weights based on class_weights and image contents
     class_counts = np.array([np.bincount(x[:, 0].astype(np.int), minlength=nc) for x in labels])
-    image_weights = (class_weights.reshape(1, nc) * class_counts).sum(1)
+    image_weights = (class_weights.reshape(1, nc) * class_counts).sum_(1)
     # index = random.choices(range(n), weights=image_weights, k=1)  # weight image sample
     return image_weights
 
