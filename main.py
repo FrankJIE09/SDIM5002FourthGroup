@@ -22,6 +22,8 @@ import yolov5.detect as detect
 # from Client import RobotClient
 from separation_2d_Calibration import Calibration2D
 import pyrealsense2 as rs
+
+
 # from SerialControl import ComSwitch
 # import warnings
 #
@@ -93,7 +95,7 @@ class MOVE(object):
         self.tc = time.time() - struct[1]
         t_sum = self.tc + self.t3 + self.t4 + self.t2
         robotPos = self.robot.getRobotTcpPos()
-        print("robotPos = ",robotPos)
+        print("robotPos = ", robotPos)
         calBefore = time.time()
         temp = cal_time(self.vel, self.accRobot, struct[0][0], struct[0][1], robotPos[0], robotPos[1],
                         self.belt_velocity, t_sum)
@@ -115,10 +117,10 @@ class MOVE(object):
             self.robot.MoveL(self.vel, self.accRobot, tempPoseHover)
             self.openGripper()
             moveEndure = time.time() - moveBefore
-            t_delay = temp[3] + tm - moveEndure -1.3
+            t_delay = temp[3] + tm - moveEndure - 1.3
             print("moveEndure = ", moveEndure)
             if t_delay > 0:
-                print("delay_time = ",t_delay)
+                print("delay_time = ", t_delay)
                 time.sleep(t_delay)
             descendBefore = time.time()
             self.robot.MoveL(self.vel, self.accRobot, tempPose)
@@ -134,8 +136,8 @@ class MOVE(object):
             self.robotFuncLabel = False
             return
         else:
-            tempPoseHover = [temp[0], temp[1], self.height_offset, angle , 0, 0]
-            tempPose = [temp[0], temp[1], self.z, angle , 0, 0]
+            tempPoseHover = [temp[0], temp[1], self.height_offset, angle, 0, 0]
+            tempPose = [temp[0], temp[1], self.z, angle, 0, 0]
             # print("temp = ", temp)
             self.robot.MoveL(self.vel, self.accRobot, tempPoseHover)
             self.openGripper()
@@ -231,7 +233,7 @@ class CAMERA(object):
             # cv2.waitKey()
             # exit()
             # region_class = object_detector.detect('picture/'+pictureName)
-            region_class = detect.run(weights='best.pt',source='picture/' + pictureName)
+            region_class = detect.run(weights='best.pt', source='picture/' + pictureName)
             # if no object
             if region_class.__len__() == 0:
                 continue
@@ -280,6 +282,7 @@ class CAMERA(object):
             # row
             vy = (uv[1] + uv[3]) / 2.0
             temp = hand_eye.cvt(ux, vy)
+            print(temp)  # -0.4689398, -0.55611725
             # 处理时间，得到抓取点和目标点
             # angle
             if abs(uv[2] - uv[0]) >= abs(uv[3] - uv[1]):
