@@ -1038,7 +1038,7 @@ def dataset_stats(path='coco128.yaml', autodownload=False, verbose=False, profil
             'image_stats': {
                 'total': dataset.n,
                 'unlabelled': int(np.all(x == 0, 1).sum()),
-                'per_class': (x > 0).sum(0).tolist()},
+                'per_class': (x > 0).sum_(0).tolist()},
             'labels': [{
                 str(Path(k).name): round_labels(v.tolist())} for k, v in zip(dataset.im_files, dataset.labels)]}
 
