@@ -22,9 +22,11 @@ import yolov5.detect as detect
 # from Client import RobotClient
 from separation_2d_Calibration import Calibration2D
 import pyrealsense2 as rs
+from Control import *
+
+from SerialControl import ComSwitch
 
 
-# from SerialControl import ComSwitch
 # import warnings
 #
 # warnings.filterwarnings(action='ignore')
@@ -188,6 +190,10 @@ class CAMERA(object):
         profile = self.pipeline.start(config)
         align_to = rs.stream.color
         self.align = rs.align(align_to)
+        self.robot = URControl()
+        self.grab = ComSwitch()
+        self.grab.open()
+        self.robot.initPose()
 
     def get_image(self):
         frames = self.pipeline.wait_for_frames()
@@ -201,7 +207,7 @@ class CAMERA(object):
         """set camera"""
         # set ROI
         # row_min, row_max, col_min, col_max
-        crop_bounding = [292, 525, 491, 1048]  # (400 100) (1000 700)
+        crop_bounding = [250, 410, 540, 770]  # (400 100) (1000 700)
         # calibration
         cali_file = os.path.dirname(os.path.abspath(__file__)) + '/sepa_cali2D.yaml'
         hand_eye = Calibration2D(cali_file)
@@ -260,38 +266,51 @@ class CAMERA(object):
             if len(uv_roi) == 0:
                 continue
             # 选取第一个，后续可能可以实现多点抓取
-            uv = uv_roi[0]
-            cla = cla_roi[0]
-            cfi = cfi_roi[0]
-            """ get place pose"""
-            if cla == 0:
-                target_pose = bin_1
-            elif cla == 1:
-                target_pose = bin_2
-            elif cla == 2:
-                target_pose = bin_3
-            elif cla == 3:
-                target_pose = bin_4
-            else:
-                print('\033[1;35m Error Category \033[0m!')
-                target_pose = bin_1
-                # continue
-            # transfer to robot coordinate
-            # col
-            ux = (uv[0] + uv[2]) / 2.0
-            # row
-            vy = (uv[1] + uv[3]) / 2.0
-            temp = hand_eye.cvt(ux, vy)
-            print(temp)  # -0.4689398, -0.55611725
-            # 处理时间，得到抓取点和目标点
-            # angle
-            if abs(uv[2] - uv[0]) >= abs(uv[3] - uv[1]):
-                angle = 90
-            else:
-                angle = 0
-            # limit line for x
-            objectPool.append([temp, tCameraBefore, angle, target_pose])
-            # print("IN identify,objectPool = ", objectPool)
+            for i in range(len(uv_roi)):
+                uv = uv_roi[i]
+                cla = cla_roi[i]
+                cfi = cfi_roi[i]
+                """ get place pose"""
+                if cla == 0:
+                    target_pose = bin_1
+                elif cla == 1:
+                    target_pose = bin_2
+                elif cla == 2:
+                    target_pose = bin_3
+                elif cla == 3:
+                    target_pose = bin_4
+                else:
+                    print('\033[1;35m Error Category \033[0m!')
+                    target_pose = bin_1
+                    # continue
+                # transfer to robot coordinate
+                # col
+                ux = (uv[0] + uv[2]) / 2.0
+                # row
+                vy = (uv[1] + uv[3]) / 2.0
+                temp = hand_eye.cvt(ux, vy)
+                print(temp)  # -0.4689398, -0.55611725
+                # 处理时间，得到抓取点和目标点
+                # angle
+                if abs(uv[2] - uv[0]) >= abs(uv[3] - uv[1]):
+                    angle = 90
+                else:
+                    angle = 0
+                # limit line for x
+                # print("IN identify,objectPool = ", objectPool)
+                rpy = np.array([math.pi, 0, -3 * math.pi / 4])
+                rotVec = rpy2rot_vec(rpy)
+                self.robot.control_c.moveL([temp[0], temp[1] + 0.005, 0.25, rotVec[0], rotVec[1], rotVec[2]],
+                                           speed=0.1)
+                self.grab.close()
+                time.sleep(1)
+                self.robot.control_c.moveL([temp[0], temp[1] + 0.005, 0.55, rotVec[0], rotVec[1], rotVec[2]],
+                                           speed=0.1)
+                self.robot.submitTube()
+                time.sleep(1)
+                self.grab.open()
+                time.sleep(1)
+            self.robot.initPose()
 
 
 theta = math.radians(0.977)
