@@ -13,5 +13,5 @@ Object Identify:
  - [Yolo learning and test](./yolov5/yolo/): Through Yolo we create machine learning modules.Get the weight [files](/.best.pt).
 
 # Video
-<iframe width="560" height="315" src="https://youtu.be/jR6myUZJ5hU" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=jR6myUZJ5hU" frameborder="0" allowfullscreen></iframe>
 
